@@ -8,9 +8,7 @@ import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +28,7 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
         SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
         if (entity == null) return null;
 
-        if (Boolean.TRUE.equals(entity.getIsHeadquarters())) {
+        if (Boolean.TRUE.equals(entity.getIsHeadquarter())) {
             List<SwiftCode> branches = swiftCodeRepository.getBySwiftCodeStartingWith(entity.getSwiftCode().substring(0, 8));
             List<SwiftCodeResponse> branchResponses = SwiftCodeMapper.mapToResponseList(branches);
             return SwiftCodeMapper.mapToResponse(entity, branchResponses);

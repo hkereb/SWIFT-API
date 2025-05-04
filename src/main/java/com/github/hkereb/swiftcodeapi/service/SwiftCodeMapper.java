@@ -17,7 +17,7 @@ public class SwiftCodeMapper {
         code.setBankAddress(request.getAddress());
         code.setCountryISO2(request.getCountryISO2());
         code.setCountry(request.getCountryName());
-        code.setIsHeadquarters(request.isHeadquarter());
+        code.setIsHeadquarter(request.isHeadquarter());
 
         // omitted in request
         code.setCodeType(null);
@@ -32,7 +32,7 @@ public class SwiftCodeMapper {
                 entity.getBankName(),
                 entity.getCountryISO2(),
                 entity.getCountry(),
-                Boolean.TRUE.equals(entity.getIsHeadquarters()),
+                Boolean.TRUE.equals(entity.getIsHeadquarter()),
                 entity.getSwiftCode(),
                 branches
         );
