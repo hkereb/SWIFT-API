@@ -8,16 +8,11 @@ import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeResponse;
 import java.util.List;
 
 public interface SwiftCodeService {
+    // TODO cleanup between service and repo
     MessageResponse  upsert(SwiftCodeRequest swiftCode);
-    String upsertAll(List<SwiftCode> records);
-
-    SwiftCode getById(Integer id);
     SwiftCodeResponse getBySwiftCode(String swiftCode);
-    List<SwiftCode> getAllSwiftRecords();
     List<SwiftCodeResponse> getByCountryISO2(String iso2Code);
-
-    String deleteById(Integer id);
     MessageResponse deleteBySwiftCode(String swiftCode);
-    List<SwiftCode> getBranchesBySwiftCode(String swiftCode);
+    //List<SwiftCode> getBranchesBySwiftCode(String swiftCode);
     boolean isDatabaseInitialized();
 }
