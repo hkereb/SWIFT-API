@@ -1,4 +1,4 @@
-package com.github.hkereb.swiftcodeapi.model;
+package com.github.hkereb.swiftcodeapi.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "SWIFT_CODES")
-public class SwiftRecord {
+public class SwiftCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,7 +15,7 @@ public class SwiftRecord {
     private String codeType;
     private String bankName;
     private String bankAddress;
-    private String countryIso2;
+    private String countryISO2;
     private String country;
     private String timeZone;
     private Boolean isHeadquarters;
