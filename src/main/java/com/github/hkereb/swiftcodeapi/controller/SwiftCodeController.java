@@ -1,12 +1,13 @@
 package com.github.hkereb.swiftcodeapi.controller;
 
-import com.github.hkereb.swiftcodeapi.domain.SwiftCode;
+import com.github.hkereb.swiftcodeapi.dto.request.SwiftCodeRequest;
+import com.github.hkereb.swiftcodeapi.dto.response.MessageResponse;
+import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeResponse;
 import com.github.hkereb.swiftcodeapi.service.SwiftCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/swift-codes")
@@ -16,24 +17,22 @@ public class SwiftCodeController {
     private SwiftCodeService swiftCodeService;
 
     @GetMapping("/{swiftCode}")
-    public SwiftCode getSwiftByCode(@PathVariable String swiftCode) {
+    public SwiftCodeResponse getSwiftByCode(@PathVariable String swiftCode) {
         return swiftCodeService.getBySwiftCode(swiftCode);
     }
 
     @GetMapping("/country/{countryISO2}")
-    public List<SwiftCode> getAllByCountryISO2(@PathVariable String countryISO2) {
+    public List<SwiftCodeResponse> getAllByCountryISO2(@PathVariable String countryISO2) {
         return swiftCodeService.getByCountryISO2(countryISO2);
     }
 
     @PostMapping
-    public String addSwiftRecord(@RequestBody SwiftCode swiftCode) {
-        return swiftCodeService.upsert(swiftCode);
+    public MessageResponse addSwiftRecord(@RequestBody SwiftCodeRequest request) {
+        return swiftCodeService.upsert(request);
     }
 
     @DeleteMapping("/{swiftCode}")
-    public Map<String, String> deleteBySwiftCode(@PathVariable String swiftCode) {
-        String message = swiftCodeService.deleteBySwiftCode(swiftCode);
-        return Map.of("message", message);
+    public MessageResponse deleteBySwiftCode(@PathVariable String swiftCode) {
+        return swiftCodeService.deleteBySwiftCode(swiftCode);
     }
-
 }

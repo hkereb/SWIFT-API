@@ -15,5 +15,5 @@ public class SwiftCodeResponse {
     private String countryName;
     private boolean isHeadquarter;
     private String swiftCode;
-    private List<SwiftBranchResponse> branches;
+    private List<SwiftCodeResponse> branches;
 }

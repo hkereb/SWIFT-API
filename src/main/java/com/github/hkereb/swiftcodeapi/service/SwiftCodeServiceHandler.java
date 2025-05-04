@@ -1,12 +1,17 @@
 package com.github.hkereb.swiftcodeapi.service;
 
 import com.github.hkereb.swiftcodeapi.domain.SwiftCode;
+import com.github.hkereb.swiftcodeapi.dto.request.SwiftCodeRequest;
+import com.github.hkereb.swiftcodeapi.dto.response.MessageResponse;
+import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeResponse;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SwiftCodeServiceHandler implements SwiftCodeService {
@@ -15,14 +20,15 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
     private SwiftCodeRepository swiftCodeRepository;
 
     @Override
-    public String upsert(SwiftCode swiftCode) {
-        swiftCodeRepository.save(swiftCode);
-        return "success";
+    public MessageResponse upsert(SwiftCodeRequest request) {
+        SwiftCode entity = SwiftCodeMapper.mapToEntity(request);
+        swiftCodeRepository.save(entity);
+        return new MessageResponse("New SWIFT code has been added.");
     }
     @Override
     public String upsertAll(List<SwiftCode> records) {
         swiftCodeRepository.saveAll(records);
-        return "bulk upsert success";
+        return "Bulk upsert success.";
     }
 
     @Override
@@ -30,13 +36,36 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
         Optional<SwiftCode> findById = swiftCodeRepository.findById(id);
         return findById.orElse(null);
     }
+
     @Override
-    public SwiftCode getBySwiftCode(String swiftCode) {
-        return swiftCodeRepository.getBySwiftCode(swiftCode);
+    public SwiftCodeResponse getBySwiftCode(String swiftCode) {
+        SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
+        if (entity == null) return null;
+
+        if (Boolean.TRUE.equals(entity.getIsHeadquarters())) {
+            List<SwiftCode> branches = swiftCodeRepository.getBranchesBySwiftCode(entity.getSwiftCode());
+            List<SwiftCodeResponse> branchResponses = SwiftCodeMapper.mapToResponseList(branches);
+            return SwiftCodeMapper.mapToResponse(entity, branchResponses);
+        } else {
+            return SwiftCodeMapper.mapToResponse(entity);
+        }
     }
+
     @Override
-    public List<SwiftCode> getByCountryISO2(String iso2Code) {
-        return swiftCodeRepository.getByCountryISO2(iso2Code);
+    public List<SwiftCode> getBranchesBySwiftCode(String swiftCode) {
+        if (swiftCode == null || swiftCode.length() < 8) {
+            return Collections.emptyList();
+        }
+        return swiftCodeRepository.getBranchesBySwiftCode(swiftCode.substring(0, 8));
+    }
+
+
+    @Override
+    public List<SwiftCodeResponse> getByCountryISO2(String iso2Code) {
+        List<SwiftCode> records = swiftCodeRepository.getByCountryISO2(iso2Code);
+        return records.stream()
+                .map(SwiftCodeMapper::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -54,18 +83,18 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
     }
 
     @Override
-    public String deleteBySwiftCode(String swiftCode) {
-        Optional<SwiftCode> optional = Optional.ofNullable(swiftCodeRepository.getBySwiftCode(swiftCode));
-        if (optional.isPresent()) {
-            swiftCodeRepository.delete(optional.get());
-            return "Delete Success";
+    public MessageResponse deleteBySwiftCode(String swiftCode) {
+        SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
+        if (entity != null) {
+            swiftCodeRepository.delete(entity);
+            return new MessageResponse("Swift code deleted successfully.");
         }
-        return "No Record";
+        return new MessageResponse("No record found for swift code: " + swiftCode);
     }
-
 
     @Override
     public boolean isDatabaseInitialized() {
         return swiftCodeRepository.count() > 0;
     }
+
 }
