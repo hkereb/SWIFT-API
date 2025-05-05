@@ -2,7 +2,7 @@ package com.github.hkereb.swiftcodeapi.util;
 
 import com.github.hkereb.swiftcodeapi.domain.SwiftCode;
 import com.github.hkereb.swiftcodeapi.exceptions.InvalidExcelFormatException;
-import com.github.hkereb.swiftcodeapi.exceptions.MissingRequiredFieldException;
+import com.github.hkereb.swiftcodeapi.exceptions.InvalidInputException;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import lombok.Setter;
 import org.apache.poi.ss.usermodel.*;
@@ -24,7 +24,7 @@ public class SwiftCodeExcelParser {
     @Autowired
     private SwiftCodeRepository swiftCodeRepository;
 
-    public void parseExcelFile(String filePath) throws IOException, MissingRequiredFieldException, InvalidExcelFormatException {
+    public void parseExcelFile(String filePath) throws IOException, InvalidExcelFormatException {
         FileInputStream fis = new FileInputStream(filePath);
         Workbook workbook = new XSSFWorkbook(fis);
 
@@ -47,7 +47,6 @@ public class SwiftCodeExcelParser {
             }
         }
 
-
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
 
@@ -62,10 +61,10 @@ public class SwiftCodeExcelParser {
             String timeZone = getCellString(row, headerMap.get("timezone")).toUpperCase();
 
             // validate obligatory fields
-            if (countryISO2.isEmpty()) throw new MissingRequiredFieldException("Missing required field: countryISO2");
-            if (swiftCode.isEmpty()) throw new MissingRequiredFieldException("Missing required field: swiftCode");
-            if (bankName.isEmpty()) throw new MissingRequiredFieldException("Missing required field: bankName");
-            if (countryName.isEmpty()) throw new MissingRequiredFieldException("Missing required field: countryName");
+            if (countryISO2.isEmpty()) throw new InvalidInputException("Missing required field: countryISO2");
+            if (swiftCode.isEmpty()) throw new InvalidInputException("Missing required field: swiftCode");
+            if (bankName.isEmpty()) throw new InvalidInputException("Missing required field: bankName");
+            if (countryName.isEmpty()) throw new InvalidInputException("Missing required field: countryName");
 
             // create new entity and push to database
             SwiftCode swiftCodeEntity = new SwiftCode();
@@ -95,12 +94,6 @@ public class SwiftCodeExcelParser {
 
     private String simplifyColumnHeader(String header) {
         return header.trim().replaceAll(" ", "").toLowerCase();
-    }
-
-    private void validateRequiredField(String value, String fieldName) throws MissingRequiredFieldException {
-        if (value == null || value.isEmpty()) {
-            throw new MissingRequiredFieldException("Missing required field: " + fieldName);
-        }
     }
 
 }

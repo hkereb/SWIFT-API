@@ -80,4 +80,7 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
         return swiftCodeRepository.count() > 0;
     }
 
+    private boolean isNullOrBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
 }

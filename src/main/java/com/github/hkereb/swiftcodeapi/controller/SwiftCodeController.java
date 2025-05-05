@@ -34,7 +34,7 @@ public class SwiftCodeController {
         throw new MissingPathVariableException("Parameter countryISO2 is required for this path (e.g. v1/swift-codes/country/PL)");
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public MessageResponse addSwiftCode(@RequestBody SwiftCodeRequest request) {
         return swiftCodeService.upsert(request);
     }

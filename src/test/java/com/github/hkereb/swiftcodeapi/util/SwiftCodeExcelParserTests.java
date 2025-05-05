@@ -1,7 +1,7 @@
 package com.github.hkereb.swiftcodeapi.util;
 
 import com.github.hkereb.swiftcodeapi.exceptions.InvalidExcelFormatException;
-import com.github.hkereb.swiftcodeapi.exceptions.MissingRequiredFieldException;
+import com.github.hkereb.swiftcodeapi.exceptions.InvalidInputException;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -29,7 +29,7 @@ public class SwiftCodeExcelParserTests {
     }
 
     @Test
-    public void parseExcelFile_AllInputDataCorrect_SetAllData() throws MissingRequiredFieldException, IOException, InvalidExcelFormatException {
+    public void parseExcelFile_AllInputDataCorrect_SetAllData() throws InvalidInputException, IOException, InvalidExcelFormatException {
         File tempFile = File.createTempFile("swift_test", ".xlsx");
 
         try (XSSFWorkbook workbook = new XSSFWorkbook();
@@ -77,7 +77,7 @@ public class SwiftCodeExcelParserTests {
     }
 
     @Test
-    void parseExcelFile_BankAddressCellEmpty_SetBankAddressToNull() throws IOException, MissingRequiredFieldException, InvalidExcelFormatException {
+    void parseExcelFile_BankAddressCellEmpty_SetBankAddressToNull() throws IOException, InvalidExcelFormatException {
         File tempFile = File.createTempFile("swift_test_empty_address", ".xlsx");
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Data");
@@ -137,8 +137,5 @@ public class SwiftCodeExcelParserTests {
 
         tempFile.deleteOnExit();
     }
-
-    // TODO omit empty rows (all null)
-    // TODO not null values empty
 
 }
