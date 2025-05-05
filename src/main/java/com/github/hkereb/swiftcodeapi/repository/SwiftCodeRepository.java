@@ -12,4 +12,5 @@ public interface SwiftCodeRepository extends JpaRepository<SwiftCode, Serializab
     SwiftCode getBySwiftCode(String swiftCode);
     List<SwiftCode> getByCountryISO2(String iso2Code);
     List<SwiftCode> getBranchesBySwiftCode(String swiftCode);
+    List<SwiftCode> getBySwiftCodeStartingWithAndIsHeadquarterFalse(String swiftCodePrefix);
 }

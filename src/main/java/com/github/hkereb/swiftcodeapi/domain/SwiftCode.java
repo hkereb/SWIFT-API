@@ -16,7 +16,8 @@ public class SwiftCode {
     private String bankName;
     private String bankAddress;
     private String countryISO2;
-    private String country;
+    private String countryName;
+    private String townName;
     private String timeZone;
-    private Boolean isHeadquarters;
+    private Boolean isHeadquarter;
 }
