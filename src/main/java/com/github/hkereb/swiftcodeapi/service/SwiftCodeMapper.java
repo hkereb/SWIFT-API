@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Component
 public class SwiftCodeMapper {
 
-    public static SwiftCode mapToEntity(SwiftCodeRequest request) {
+    public SwiftCode mapToEntity(SwiftCodeRequest request) {
         SwiftCode code = new SwiftCode();
 
         code.setSwiftCode(request.getSwiftCode());
@@ -30,7 +30,7 @@ public class SwiftCodeMapper {
         return code;
     }
 
-    public static SwiftCodePartialResponse mapToPartialResponse(SwiftCode entity) {
+    public SwiftCodePartialResponse mapToPartialResponse(SwiftCode entity) {
         return new SwiftCodePartialResponse(
                 entity.getBankAddress(),
                 entity.getBankName(),
@@ -40,9 +40,9 @@ public class SwiftCodeMapper {
         );
     }
 
-    public static SwiftCodeDetailResponse mapToResponse(SwiftCode entity, List<SwiftCode> branches) {
+    public SwiftCodeDetailResponse mapToResponse(SwiftCode entity, List<SwiftCode> branches) {
         List<SwiftCodePartialResponse> branchResponses = branches.stream()
-                .map(SwiftCodeMapper::mapToPartialResponse)
+                .map(this::mapToPartialResponse)
                 .collect(Collectors.toList());
 
         return new SwiftCodeDetailResponse(
@@ -56,13 +56,13 @@ public class SwiftCodeMapper {
         );
     }
 
-    public static SwiftCodeDetailResponse mapToResponse(SwiftCode entity) {
+    public  SwiftCodeDetailResponse mapToResponse(SwiftCode entity) {
         return mapToResponse(entity, Collections.emptyList());
     }
 
-    public static SwiftCodeByCountryResponse mapToByCountryResponse(String countryISO2, String countryName, List<SwiftCode> codes) {
+    public SwiftCodeByCountryResponse mapToByCountryResponse(String countryISO2, String countryName, List<SwiftCode> codes) {
         List<SwiftCodePartialResponse> responses = codes.stream()
-                .map(SwiftCodeMapper::mapToPartialResponse)
+                .map(this::mapToPartialResponse)
                 .collect(Collectors.toList());
 
         return new SwiftCodeByCountryResponse(

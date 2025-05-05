@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-public class SwiftCodeExcelParserTest {
+public class SwiftCodeExcelParserTests {
     private SwiftCodeExcelParser parser;
     private SwiftCodeRepository swiftCodeRepository;
 
