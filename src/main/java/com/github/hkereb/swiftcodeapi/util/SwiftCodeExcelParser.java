@@ -1,13 +1,15 @@
 package com.github.hkereb.swiftcodeapi.util;
 
 import com.github.hkereb.swiftcodeapi.domain.SwiftCode;
+import com.github.hkereb.swiftcodeapi.exceptions.InvalidExcelFormatException;
+import com.github.hkereb.swiftcodeapi.exceptions.MissingRequiredFieldException;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -15,14 +17,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+@Setter
 @Service
 public class SwiftCodeExcelParser {
 
     @Autowired
     private SwiftCodeRepository swiftCodeRepository;
 
-    public void parseExcelFile(String filePath) throws IOException {
-        FileInputStream fis = new FileInputStream(new File(filePath));
+    public void parseExcelFile(String filePath) throws IOException, MissingRequiredFieldException, InvalidExcelFormatException {
+        FileInputStream fis = new FileInputStream(filePath);
         Workbook workbook = new XSSFWorkbook(fis);
 
         Sheet sheet = workbook.getSheetAt(0);
@@ -32,10 +35,18 @@ public class SwiftCodeExcelParser {
         if (rowIterator.hasNext()) {
             Row headerRow = rowIterator.next();
             for (Cell cell : headerRow) {
-                String simplifiedHeader = cell.getStringCellValue().trim().replaceAll(" ", "").toLowerCase();
-                headerMap.put(simplifiedHeader, cell.getColumnIndex());
+                headerMap.put(simplifyColumnHeader(cell.getStringCellValue()), cell.getColumnIndex());
             }
         }
+
+        // validate obligatory columns
+        String[] requiredHeaders = {"countryiso2code", "swiftcode", "name", "countryname"};
+        for (String requiredHeader : requiredHeaders) {
+            if (!headerMap.containsKey(requiredHeader)) {
+                throw new InvalidExcelFormatException("Missing required column: " + requiredHeader);
+            }
+        }
+
 
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
@@ -44,23 +55,29 @@ public class SwiftCodeExcelParser {
             String countryISO2 = getCellString(row, headerMap.get("countryiso2code")).toUpperCase();
             String swiftCode = getCellString(row, headerMap.get("swiftcode")).toUpperCase();
             String codeType = getCellString(row, headerMap.get("codetype")).toUpperCase();
-            String bankName = getCellString(row, headerMap.get("name"));
-            String address = getCellString(row, headerMap.get("address"));
-            String townName = getCellString(row, headerMap.get("townname"));
+            String bankName = getCellString(row, headerMap.get("name")).toUpperCase();
+            String address = getCellString(row, headerMap.get("address")).toUpperCase();
+            String townName = getCellString(row, headerMap.get("townname")).toUpperCase();
             String countryName = getCellString(row, headerMap.get("countryname")).toUpperCase();
-            String timeZone = getCellString(row, headerMap.get("timezone"));
+            String timeZone = getCellString(row, headerMap.get("timezone")).toUpperCase();
+
+            // validate obligatory fields
+            if (countryISO2.isEmpty()) throw new MissingRequiredFieldException("Missing required field: countryISO2");
+            if (swiftCode.isEmpty()) throw new MissingRequiredFieldException("Missing required field: swiftCode");
+            if (bankName.isEmpty()) throw new MissingRequiredFieldException("Missing required field: bankName");
+            if (countryName.isEmpty()) throw new MissingRequiredFieldException("Missing required field: countryName");
 
             // create new entity and push to database
             SwiftCode swiftCodeEntity = new SwiftCode();
 
             swiftCodeEntity.setCountryISO2(countryISO2);
             swiftCodeEntity.setSwiftCode(swiftCode);
-            swiftCodeEntity.setCodeType(codeType);
+            swiftCodeEntity.setCodeType(codeType.isEmpty() ? null : codeType);
             swiftCodeEntity.setBankName(bankName);
-            swiftCodeEntity.setBankAddress(address);
-            swiftCodeEntity.setTownName(townName);
+            swiftCodeEntity.setBankAddress(address.isEmpty() ? null : address);
+            swiftCodeEntity.setTownName(townName.isEmpty() ? null : townName);
             swiftCodeEntity.setCountryName(countryName);
-            swiftCodeEntity.setTimeZone(timeZone);
+            swiftCodeEntity.setTimeZone(timeZone.isEmpty() ? null : timeZone);
             swiftCodeEntity.setIsHeadquarter(swiftCode.endsWith("XXX"));
 
             swiftCodeRepository.save(swiftCodeEntity);
@@ -75,4 +92,15 @@ public class SwiftCodeExcelParser {
         Cell cell = row.getCell(cellIndex);
         return cell != null ? cell.toString().trim() : "";
     }
+
+    private String simplifyColumnHeader(String header) {
+        return header.trim().replaceAll(" ", "").toLowerCase();
+    }
+
+    private void validateRequiredField(String value, String fieldName) throws MissingRequiredFieldException {
+        if (value == null || value.isEmpty()) {
+            throw new MissingRequiredFieldException("Missing required field: " + fieldName);
+        }
+    }
+
 }

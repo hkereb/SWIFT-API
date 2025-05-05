@@ -3,7 +3,9 @@ package com.github.hkereb.swiftcodeapi.service;
 import com.github.hkereb.swiftcodeapi.domain.SwiftCode;
 import com.github.hkereb.swiftcodeapi.dto.request.SwiftCodeRequest;
 import com.github.hkereb.swiftcodeapi.dto.response.MessageResponse;
-import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeResponse;
+import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeByCountryResponse;
+import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeDetailResponse;
+import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodePartialResponse;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,24 +26,24 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
         return new MessageResponse("New SWIFT code has been added.");
     }
     @Override
-    public SwiftCodeResponse getBySwiftCode(String swiftCode) {
+    public SwiftCodeDetailResponse getBySwiftCode(String swiftCode) {
         SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
         if (entity == null) return null;
 
         if (Boolean.TRUE.equals(entity.getIsHeadquarter())) {
             List<SwiftCode> branches = swiftCodeRepository.getBySwiftCodeStartingWithAndIsHeadquarterFalse(entity.getSwiftCode().substring(0, 8));
-            List<SwiftCodeResponse> branchResponses = SwiftCodeMapper.mapToResponseList(branches);
-            return SwiftCodeMapper.mapToResponse(entity, branchResponses);
+            return SwiftCodeMapper.mapToResponse(entity, branches);
         } else {
             return SwiftCodeMapper.mapToResponse(entity);
         }
     }
     @Override
-    public List<SwiftCodeResponse> getByCountryISO2(String iso2Code) {
-        List<SwiftCode> records = swiftCodeRepository.getByCountryISO2(iso2Code);
-        return records.stream()
-                .map(SwiftCodeMapper::mapToResponse)
-                .collect(Collectors.toList());
+    public SwiftCodeByCountryResponse getByCountryISO2(String iso2Code) {
+        List<SwiftCode> entities = swiftCodeRepository.getByCountryISO2(iso2Code);
+        String countryISO2 = entities.getFirst().getCountryISO2();
+        String countryName = entities.getFirst().getCountryName();
+
+        return SwiftCodeMapper.mapToByCountryResponse(countryISO2, countryName, entities);
     }
     @Override
     public MessageResponse deleteBySwiftCode(String swiftCode) {
