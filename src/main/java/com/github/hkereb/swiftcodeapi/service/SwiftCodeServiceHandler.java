@@ -29,7 +29,7 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
         if (entity == null) return null;
 
         if (Boolean.TRUE.equals(entity.getIsHeadquarter())) {
-            List<SwiftCode> branches = swiftCodeRepository.getBySwiftCodeStartingWith(entity.getSwiftCode().substring(0, 8));
+            List<SwiftCode> branches = swiftCodeRepository.getBySwiftCodeStartingWithAndIsHeadquarterFalse(entity.getSwiftCode().substring(0, 8));
             List<SwiftCodeResponse> branchResponses = SwiftCodeMapper.mapToResponseList(branches);
             return SwiftCodeMapper.mapToResponse(entity, branchResponses);
         } else {
