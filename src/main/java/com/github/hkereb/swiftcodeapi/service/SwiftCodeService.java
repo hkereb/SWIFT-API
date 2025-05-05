@@ -12,5 +12,4 @@ public interface SwiftCodeService {
     SwiftCodeDetailResponse getBySwiftCode(String swiftCode);
     SwiftCodeByCountryResponse getByCountryISO2(String iso2Code);
     MessageResponse deleteBySwiftCode(String swiftCode);
-    boolean isDatabaseInitialized();
 }

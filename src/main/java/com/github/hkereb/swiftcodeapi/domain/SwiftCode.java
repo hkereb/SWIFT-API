@@ -32,10 +32,8 @@ public class SwiftCode {
     @Column(nullable = false)
     private String countryName;
 
-    @Column(nullable = false)
     private String townName;
 
-    @Column(nullable = false)
     private String timeZone;
 
     @NotNull

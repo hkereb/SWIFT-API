@@ -5,10 +5,12 @@ import com.github.hkereb.swiftcodeapi.dto.request.SwiftCodeRequest;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeByCountryResponse;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeDetailResponse;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodePartialResponse;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class SwiftCodeMapper {
 
     public static SwiftCode mapToEntity(SwiftCodeRequest request) {

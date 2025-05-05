@@ -6,6 +6,7 @@ import com.github.hkereb.swiftcodeapi.dto.response.MessageResponse;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeByCountryResponse;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodeDetailResponse;
 import com.github.hkereb.swiftcodeapi.dto.response.SwiftCodePartialResponse;
+import com.github.hkereb.swiftcodeapi.exceptions.RecordNotFoundException;
 import com.github.hkereb.swiftcodeapi.repository.SwiftCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,14 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
     public MessageResponse upsert(SwiftCodeRequest request) {
         SwiftCode entity = SwiftCodeMapper.mapToEntity(request);
         swiftCodeRepository.save(entity);
-        return new MessageResponse("New SWIFT code has been added.");
+        return new MessageResponse("Swift code added successfully.");
     }
     @Override
     public SwiftCodeDetailResponse getBySwiftCode(String swiftCode) {
         SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
-        if (entity == null) return null;
+        if (entity == null) {
+            throw new RecordNotFoundException(swiftCode);
+        }
 
         if (Boolean.TRUE.equals(entity.getIsHeadquarter())) {
             List<SwiftCode> branches = swiftCodeRepository.getBySwiftCodeStartingWithAndIsHeadquarterFalse(entity.getSwiftCode().substring(0, 8));
@@ -48,15 +51,12 @@ public class SwiftCodeServiceHandler implements SwiftCodeService {
     @Override
     public MessageResponse deleteBySwiftCode(String swiftCode) {
         SwiftCode entity = swiftCodeRepository.getBySwiftCode(swiftCode);
-        if (entity != null) {
-            swiftCodeRepository.delete(entity);
-            return new MessageResponse("Swift code deleted successfully.");
+        if (entity == null) {
+            throw new RecordNotFoundException(swiftCode);
         }
-        return new MessageResponse("No record found for swift code: " + swiftCode);
-    }
-    @Override
-    public boolean isDatabaseInitialized() {
-        return swiftCodeRepository.count() > 0;
+
+        swiftCodeRepository.delete(entity);
+        return new MessageResponse("Swift code deleted successfully.");
     }
 
 }
