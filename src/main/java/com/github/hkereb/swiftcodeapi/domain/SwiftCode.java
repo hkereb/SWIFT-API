@@ -2,6 +2,7 @@ package com.github.hkereb.swiftcodeapi.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
 @Entity
@@ -11,13 +12,31 @@ public class SwiftCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Column(nullable = false)
     private String swiftCode;
+
     private String codeType;
+
+    @NotNull
+    @Column(nullable = false)
     private String bankName;
+
     private String bankAddress;
+
+    @NotNull
+    @Column(nullable = false)
     private String countryISO2;
+
+    @NotNull
+    @Column(nullable = false)
     private String countryName;
+
     private String townName;
+
     private String timeZone;
+
+    @NotNull
+    @Column(nullable = false)
     private Boolean isHeadquarter;
 }

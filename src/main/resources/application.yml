@@ -1,12 +1,14 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: SwiftCodeAPI
   datasource:
-    username: root
-    password: "!_SuperSecureDB_!"
-    url: jdbc:mysql://localhost:3306/swiftcodes
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create
+    show-sql: false
