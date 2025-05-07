@@ -1,16 +1,16 @@
-# Swift Code API
+# 🏦 Swift Code API
 
 A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL database in a Dockerized environment. Data provided by Remitly.
 
-## Technologies Used
+## 🛠️Technologies Used
 
 * Java 21
 * Spring Boot
 * Spring Data JPA
 * MySQL
-* Docker & Docker Compose
+* Docker / Docker Compose
 
-## Getting Started
+## ⚙️ Getting Started
 🚧 **currently working on contenarization** 🚧
 
 ### Prerequisites
@@ -39,7 +39,7 @@ A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL databa
    http://localhost:8080
    ```
 
-## API Endpoints
+## 🚩 API Endpoints
 
 ### 1. Get SWIFT Code Details
 **GET** `/v1/swift-codes/{swift-code}`  
