@@ -2,6 +2,9 @@
 
 A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL database in a Dockerized environment. Data provided by Remitly.
 
+#### What is a SWIFT/BIC code?
+"A SWIFT code, or Bank Identifier Code (BIC), is a unique identifier that ensures your international money transfer reaches the correct bank and branch. It acts like a bank's unique address, guiding your funds through a global network. Select the country where your bank is located to find the correct SWIFT code."   ~ Remitly
+
 ## 🛠️Technologies Used
 
 * Java 21
