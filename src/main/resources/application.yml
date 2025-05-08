@@ -1,10 +1,12 @@
 spring:
   application:
     name: SwiftCodeAPI
+  config:
+    import: optional:file:.env[.properties]
   datasource:
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    url: ${SPRING_DATASOURCE_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 30000
@@ -13,5 +15,5 @@ spring:
       validation-timeout: 5000
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
