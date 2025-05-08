@@ -3,9 +3,9 @@
 A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL database in a Dockerized environment. Data provided by Remitly.
 
 #### What is a SWIFT/BIC code?
-"A SWIFT code, or Bank Identifier Code (BIC), is a unique identifier that ensures your international money transfer reaches the correct bank and branch. It acts like a bank's unique address, guiding your funds through a global network. Select the country where your bank is located to find the correct SWIFT code."   ~ Remitly
+A SWIFT code, or Bank Identifier Code (BIC), is a unique identifier that ensures your international money transfer reaches the correct bank and branch. It acts like a bank's unique address, guiding your funds through a global network. Select the country where your bank is located to find the correct SWIFT code.
 
-## 🛠️Technologies Used
+## Technologies Used
 
 * Java 21
 * Spring Boot
@@ -13,27 +13,30 @@ A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL databa
 * MySQL
 * Docker / Docker Compose
 
-## ⚙️ Getting Started
-🚧 **currently working on contenarization** 🚧
+## Getting Started
 
 ### Prerequisites
 
 * Docker
-* Docker Compose
-
+* 
 ### Running the Application
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/swift-code-api.git
-   cd swift-code-api
+   ```
+   git clone https://github.com/hkereb/Swift-Code-API.git
+   cd Swift-Code-API
    ```
 
-2. Start the containers:
+2. Build the project:
+   ```
+   mvn clean install
+   ```
 
-   ```bash
-   docker-compose up --build
+3. Start the containers:
+
+   ```
+   docker-compose up --build -d
    ```
 
 3. The API will be accessible at:
