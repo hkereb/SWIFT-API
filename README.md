@@ -18,7 +18,7 @@ A SWIFT code, or Bank Identifier Code (BIC), is a unique identifier that ensures
 ### Prerequisites
 
 * Docker
-* 
+  
 ### Running the Application
 
 1. Clone the repository:
