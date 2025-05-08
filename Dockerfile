@@ -1,6 +1,13 @@
 FROM openjdk:21
+
 WORKDIR /app
+
 COPY .env .env
-ADD target/SwiftCodeAPI-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY target/SwiftCodeAPI-0.0.1-SNAPSHOT.jar app.jar
+COPY scripts/wait-for-it.sh /app/scripts/wait-for-it.sh
+
+RUN chmod +x /app/scripts/wait-for-it.sh
+
+CMD ["/app/scripts/wait-for-it.sh", "mysql:3306", "--", "java", "-jar", "app.jar"]
+
 EXPOSE 8080

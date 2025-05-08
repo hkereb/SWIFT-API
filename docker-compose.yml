@@ -1,31 +1,22 @@
 services:
-  mysql-docker:
-    image: mysql
-    container_name: mysql-docker
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD_DOCKER}
-      MYSQL_DATABASE: swift_codes
-    ports:
-      - "3307:3306"
-    networks:
-      - swift-code-net
-
-  swift-code-api:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    container_name: swift-code-api
     environment:
-      SPRING_DATASOURCE_URL: ${DB_URL_DOCKER}
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME_DOCKER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD_DOCKER}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/swift_codes
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: secret
+    working_dir: /app
     depends_on:
-      - mysql-docker
-    networks:
-      - swift-code-net
+      - mysql
 
-networks:
-  swift-code-net:
-    driver: bridge
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret # to be changed in production
+      MYSQL_DATABASE: swift_codes
+    ports:
+      - "3307:3306"

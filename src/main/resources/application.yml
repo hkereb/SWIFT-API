@@ -6,6 +6,11 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
     url: ${SPRING_DATASOURCE_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 5
+      initialization-fail-timeout: 10000
+      validation-timeout: 5000
   jpa:
     hibernate:
       ddl-auto: create
