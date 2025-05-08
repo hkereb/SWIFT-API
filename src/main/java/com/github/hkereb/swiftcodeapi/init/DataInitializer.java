@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
+import java.io.InputStream;
+
 @Component
 public class DataInitializer {
 
@@ -20,7 +22,9 @@ public class DataInitializer {
     public void init() {
         if (!swiftCodeService.isDatabaseInitialized()) {
             try {
-                swiftCodeExcelParser.parseExcelFile("src/main/resources/data/Interns_2025_SWIFT_CODES.xlsx");
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data/Interns_2025_SWIFT_CODES.xlsx");
+                swiftCodeExcelParser.parseExcelFile(inputStream);
+
                 System.out.println("Database successfully initialized.");
             } catch (Exception e) {
                 System.err.println("Error initializing database: " + e.getMessage());

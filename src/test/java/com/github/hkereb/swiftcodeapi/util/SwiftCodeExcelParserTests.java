@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -59,7 +60,9 @@ public class SwiftCodeExcelParserTests {
             workbook.write(out);
         }
 
-        parser.parseExcelFile(tempFile.getAbsolutePath());
+        try (FileInputStream fis = new FileInputStream(tempFile)) {
+            parser.parseExcelFile(fis);
+        }
 
         verify(swiftCodeRepository, times(1)).save(argThat(entity ->
                 entity.getSwiftCode().equals("TESTCODEXXX") &&
@@ -107,7 +110,9 @@ public class SwiftCodeExcelParserTests {
         }
         workbook.close();
 
-        parser.parseExcelFile(tempFile.getAbsolutePath());
+        try (FileInputStream fis = new FileInputStream(tempFile)) {
+            parser.parseExcelFile(fis);
+        }
 
         verify(swiftCodeRepository, times(1)).save(argThat(entity ->
                 entity.getBankAddress() == null
@@ -131,9 +136,11 @@ public class SwiftCodeExcelParserTests {
         }
         workbook.close();
 
-        Assertions.assertThrows(InvalidExcelFormatException.class, () ->
-                parser.parseExcelFile(tempFile.getAbsolutePath())
-        );
+        try (FileInputStream fis = new FileInputStream(tempFile)) {
+            Assertions.assertThrows(InvalidExcelFormatException.class, () ->
+                    parser.parseExcelFile(fis)
+            );
+        }
 
         tempFile.deleteOnExit();
     }

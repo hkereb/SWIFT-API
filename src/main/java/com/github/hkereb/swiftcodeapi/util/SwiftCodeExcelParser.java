@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,10 +25,8 @@ public class SwiftCodeExcelParser {
     @Autowired
     private SwiftCodeRepository swiftCodeRepository;
 
-    public void parseExcelFile(String filePath) throws IOException, InvalidExcelFormatException {
-        FileInputStream fis = new FileInputStream(filePath);
-        Workbook workbook = new XSSFWorkbook(fis);
-
+    public void parseExcelFile(InputStream inputStream) throws IOException, InvalidExcelFormatException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
         Sheet sheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = sheet.iterator();
 
@@ -83,7 +82,7 @@ public class SwiftCodeExcelParser {
         }
 
         workbook.close();
-        fis.close();
+        inputStream.close();
     }
 
     private String getCellString(Row row, Integer cellIndex) {

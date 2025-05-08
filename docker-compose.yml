@@ -1,0 +1,31 @@
+services:
+  mysql-docker:
+    image: mysql
+    container_name: mysql-docker
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD_DOCKER}
+      MYSQL_DATABASE: swift_codes
+    ports:
+      - "3307:3306"
+    networks:
+      - swift-code-net
+
+  swift-code-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: swift-code-api
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL_DOCKER}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME_DOCKER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD_DOCKER}
+    depends_on:
+      - mysql-docker
+    networks:
+      - swift-code-net
+
+networks:
+  swift-code-net:
+    driver: bridge
