@@ -1,4 +1,4 @@
-# 🏦 Swift Code API
+# 🏦 SWIFT API
 
 A Spring Boot API for querying and managing SWIFT/BIC codes using a MySQL database in a Dockerized environment. Data provided by Remitly.
 
